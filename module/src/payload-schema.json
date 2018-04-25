@@ -1,0 +1,192 @@
+{
+  "type": "object",
+  "properties": {
+    "peripherals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "oneOf": [{
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [ "Thermometer" ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "settings": {
+              "type": "object",
+              "properties": {
+                "controller": {
+                  "type": "string"
+                },
+                "pin": {
+                  "type": [ "number", "string" ]
+                }
+              }
+            },
+            "state": {
+              "type": "object",
+              "properties": {
+                "celsius": {
+                  "type": "number"
+                },
+                "fahrenheit": {
+                  "type": "number"
+                },
+                "kelvin": {
+                  "type": "number"
+                }
+              }
+            },
+            "outputAlias": {
+              "type": "string"
+            }
+          },
+          "required": [ "type", "name", "settings", "outputAlias" ]
+        }, {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [ "Led" ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "settings": {
+              "type": "object",
+              "properties": {
+                "controller": {
+                  "type": "string"
+                },
+                "pin": {
+                  "type": [ "number", "string" ]
+                }
+              }
+            },
+            "state": {
+              "type": "object",
+              "oneOf": [{
+                "properties": {
+                  "on": {
+                    "type": "boolean",
+                    "enum": [ true ]
+                  },
+                  "brightness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
+                },
+                "required": [ "on" ]
+              }, {
+                "properties": {
+                  "off": {
+                    "type": "boolean",
+                    "enum": [ true ]
+                  },
+                  "brightness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
+                },
+                "required": [ "off" ]
+              }, {
+                "properties": {
+                  "strobe": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "brightness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
+                },
+                "required": [ "strobe" ]
+              }, {
+                "properties": {
+                  "pulse": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "brightness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
+                },
+                "required": [ "pulse" ]
+              }]
+            },
+            "outputAlias": {
+              "type": "string"
+            }
+          },
+          "required": [ "type", "name", "settings", "state", "outputAlias" ]
+        }, {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [ "Button" ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "settings": {
+              "type": "object",
+              "properties": {
+                "pin": {
+                  "type": [ "number", "string" ]
+                },
+                "invert": {
+                  "type": "boolean"
+                },
+                "isPullup": {
+                  "type": "boolean"
+                },
+                "isPulldown": {
+                  "type": "boolean"
+                },
+                "holdtime": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [ "pin" ]
+            },
+            "state": {
+              "type": "object",
+              "properties": {
+                "pressed": {
+                  "type": "boolean"
+                },
+                "pin": {
+                  "type": "number"
+                },
+                "downValue": {
+                  "type": "number",
+                  "enum": [ 0, 1 ]
+                },
+                "upValue": {
+                  "type": "number",
+                  "enum": [ 0, 1 ]
+                },
+                "holdtime": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "outputAlias": {
+              "type": "string"
+            }
+          },
+          "required": [ "type", "name", "settings", "outputAlias" ]
+        }]
+      }
+    }
+  },
+  "required": [ "peripherals" ]
+}

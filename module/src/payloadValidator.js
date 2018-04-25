@@ -1,8 +1,4 @@
-# Johnny-Five on IoT Edge
-An IoT Edge module for interacting with hardware based on http://johnny-five.io/
-
-# License
-
+/*
 MIT License
 
 Copyright (c) 2018 Johnny-Five IoT Edge contributors
@@ -24,3 +20,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+const Ajv = require('ajv');
+const fs = require('fs');
+const path = require('path');
+
+module.exports = {
+  validate
+};
+
+// Create a validator with the latest JSON Schema spec as of this writing
+const ajv = new Ajv();
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, 'payload-schema.json')).toString());
+const validator = ajv.compile(schemaContents);
+
+function validate(payload) {
+  if (!validator(payload)) {
+    throw validator.errors;
+  }
+}

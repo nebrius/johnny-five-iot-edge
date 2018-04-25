@@ -22,5 +22,10 @@
   "bugs": {
     "url": "https://github.com/nebrius/johnny-five-iot-edge/issues"
   },
-  "homepage": "https://github.com/nebrius/johnny-five-iot-edge#readme"
+  "homepage": "https://github.com/nebrius/johnny-five-iot-edge#readme",
+  "dependencies": {
+    "ajv": "^6.4.0",
+    "johnny-five": "^0.14.3",
+    "raspi-io": "^9.0.0"
+  }
 }
