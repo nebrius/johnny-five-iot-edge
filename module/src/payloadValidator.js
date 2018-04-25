@@ -22,47 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const { validate } = require('./payloadValidator');
+const Ajv = require('ajv');
+const fs = require('fs');
+const path = require('path');
 
-const examplePayload = {
-  peripherals: [{
-    type: "Thermometerssss",
-    name: "motor1thermometer",
-    settings: {
-      controller: "MCP9808"
-    },
-    state: {
-      celsius: 0,
-      faherenheit: 32,
-      kelvin: 217
-    },
-    outputAlias: "alias1"
-  }, {
-    type: "Led",
-    name: "alarm1",
-    settings: {
-      pin: "p1-7"
-    },
-    state: {
-      pulse: 500
-    },
-    outputAlias: "alias2"
-  }, {
-    type: "Led",
-    name: "alarm2",
-    settings: {
-      pin: "p1-9"
-    },
-    state: {
-      pulse: 500
-    },
-    outputAlias: "alias1"
-  }]
+module.exports = {
+  validate
 };
 
-try {
-  validate(examplePayload);
-  console.log('Success');
-} catch(errors) {
-  console.error(JSON.stringify(errors, null, '  '));
+// Create a validator with the latest JSON Schema spec as of this writing
+const ajv = new Ajv();
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, 'payload-schema.json')).toString());
+const validator = ajv.compile(schemaContents);
+
+function validate(payload) {
+  if (!validator(payload)) {
+    throw validator.errors;
+  }
 }

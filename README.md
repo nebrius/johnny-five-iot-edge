@@ -5,7 +5,7 @@ An IoT Edge module for interacting with hardware based on http://johnny-five.io/
 
 MIT License
 
-Copyright (c) 2018 Bryan Hughes <bryan@nebri.us>
+Copyright (c) 2018 Johnny-Five IoT Edge contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
