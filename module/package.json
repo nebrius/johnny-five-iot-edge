@@ -1,0 +1,26 @@
+{
+  "name": "johnny-five-iot-edge",
+  "version": "1.0.0",
+  "description": "An IoT Edge module for interacting with hardware based on http://johnny-five.io/",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nebrius/johnny-five-iot-edge.git"
+  },
+  "keywords": [
+    "IoT",
+    "IoT Edge",
+    "Raspberry Pi",
+    "Johnny-Five",
+    "Azure"
+  ],
+  "author": "Bryan Hughes <bryan@nebri.us>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nebrius/johnny-five-iot-edge/issues"
+  },
+  "homepage": "https://github.com/nebrius/johnny-five-iot-edge#readme"
+}
