@@ -1,8 +1,4 @@
-# Johnny-Five on IoT Edge
-An IoT Edge module for interacting with hardware based on http://johnny-five.io/
-
-# License
-
+/*
 MIT License
 
 Copyright (c) 2018 Johnny-Five IoT Edge contributors
@@ -24,3 +20,49 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+const { validate } = require('./payloadValidator');
+
+const examplePayload = {
+  peripherals: [{
+    type: "Thermometerssss",
+    name: "motor1thermometer",
+    settings: {
+      controller: "MCP9808"
+    },
+    state: {
+      celsius: 0,
+      faherenheit: 32,
+      kelvin: 217
+    },
+    outputAlias: "alias1"
+  }, {
+    type: "Led",
+    name: "alarm1",
+    settings: {
+      pin: "p1-7"
+    },
+    state: {
+      pulse: 500
+    },
+    outputAlias: "alias2"
+  }, {
+    type: "Led",
+    name: "alarm2",
+    settings: {
+      pin: "p1-9"
+    },
+    state: {
+      pulse: 500
+    },
+    outputAlias: "alias1"
+  }]
+};
+
+try {
+  validate(examplePayload);
+  console.log('Success');
+} catch(errors) {
+  console.error(JSON.stringify(errors, null, '  '));
+}
