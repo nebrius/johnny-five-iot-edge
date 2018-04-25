@@ -1,0 +1,13 @@
+FROM stefanscherer/node-windows:8-nanoserver
+
+WORKDIR /app/
+
+COPY package*.json ./
+
+RUN npm install --production
+
+COPY app.js ./
+
+ENV DEBUG_OPTION " "
+
+CMD ["cmd", "/C", "node %DEBUG_OPTION% app.js"]

@@ -1,0 +1,10 @@
+{
+    "name": "johnny5onedge",
+    "version": "0.0.1",
+    "dependencies": {
+        "azure-iot-device": "1.4.0-modules-preview",
+        "azure-iot-device-mqtt": "1.4.0-modules-preview",
+        "johnny-five": "0.14.3",
+        "raspi-io": "9.0.0"
+    }
+}
