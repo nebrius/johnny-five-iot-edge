@@ -45,20 +45,26 @@ board.on("ready", function() {
   let ledStatus = "on";
   let isMonitoring = true;
 
-  // Turn on LED and clear OLED
+  // Turn on LED and set up OLED
   led.on();
   oled.fillRect(1, 1, 128, 64, 0);
+  oled.setCursor(1, 1);
+  oled.writeString(font, 1, "System enabled.", 1, true, 2);
+
 
   // Toggle monitoring with button press
   button.on("press", function() {
     console.log( "Button pressed" );
     isMonitoring = !isMonitoring;
+    oled.fillRect(1, 1, 128, 64, 0);
+    oled.setCursor(1, 1);
+    oled.writeString(font, 1, "Temperature OK.", 1, true, 2);
   });
 
   // Print temperature to console and OLED
   temperature.on("data", function(){
     let tempCelcius = this.C
-    console.log("celsius: " + tempCelcius);
+    //console.log("celsius: " + tempCelcius);
     // If system is too hot, blink LED and display warning
     if (tempCelcius > 25  && isMonitoring && ledStatus !== "blink") {
       led.blink(500);
@@ -68,19 +74,20 @@ board.on("ready", function() {
     }
     // If system temperature is OK, leave LED on and display message
     else if (tempCelcius <= 25 && isMonitoring && ledStatus !== "on" ) {
-      led.stop().on();
+      ledStatus === "blink" ? led.stop().on() : led.on();
       ledStatus = "on";
       oled.setCursor(1, 1);
-      oled.writeString(font, 1, "Temp OK.                    ", 1, true, 2);
+      oled.writeString(font, 1, "Temperature OK.", 1, true, 2);
     }
       // If system is disabled, turn LED off and display message
     else if (!isMonitoring) {
       led.stop().off();
+      ledStatus = "off";
       oled.setCursor(1, 1);
-      oled.writeString(font, 1, "System disabled.            ", 1, true, 2);
+      oled.writeString(font, 1, "System disabled.", 1, true, 2);
     }
       
-    console.log("LED Status: " + ledStatus + ", Monitoring?: " + isMonitoring + "Temperature: " + tempCelcius + " deg C");
+    console.log("LED Status: " + ledStatus + ", Monitoring?: " + isMonitoring + ", Temperature: " + tempCelcius + " deg C");
 
   });
      
