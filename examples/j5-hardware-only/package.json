@@ -1,0 +1,19 @@
+{
+  "name": "iotedge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "johnny-five": "^0.14.3",
+    "raspi-io": "^9.0.0"
+  },
+  "dependencies": {
+    "oled-font-5x7": "^1.0.1",
+    "oled-js": "^4.0.5"
+  }
+}
