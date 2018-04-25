@@ -161,21 +161,6 @@
               "properties": {
                 "pressed": {
                   "type": "boolean"
-                },
-                "pin": {
-                  "type": "number"
-                },
-                "downValue": {
-                  "type": "number",
-                  "enum": [ 0, 1 ]
-                },
-                "upValue": {
-                  "type": "number",
-                  "enum": [ 0, 1 ]
-                },
-                "holdtime": {
-                  "type": "number",
-                  "minimum": 0
                 }
               }
             },
@@ -184,6 +169,71 @@
             }
           },
           "required": [ "type", "name", "settings", "outputAlias" ]
+        }, {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [ "Oled" ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "settings": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "address": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [ "pin" ]
+            },
+            "state": {
+              "type": "object",
+              "properties": {
+                "invertDisplay": {
+                  "type": "boolean"
+                },
+                "dimDisplay": {
+                  "type": "boolean"
+                },
+                "displayOn": {
+                  "type": "boolean"
+                },
+                "commands": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "command": {
+                        "type": "string"
+                      },
+                      "arguments": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [ "command", "arguments" ]
+                  }
+                }
+              },
+              "required": [ "commands" ]
+            },
+            "outputAlias": {
+              "type": "string"
+            }
+          },
+          "required": [ "type", "name", "settings", "state", "outputAlias" ]
         }]
       }
     }
