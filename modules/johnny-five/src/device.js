@@ -66,7 +66,7 @@ function processConfig(configMessage) {
   for (const peripheral of configMessage.peripherals) {
     if (!peripherals[peripheral.name]) {
       peripherals[peripheral.name] = instantiatePeripheral(peripheral);
-      peripherals[peripheral.name].on('state-change', (state) => sendMessage({
+      peripherals[peripheral.name].on('state-change', (state) => sendMessage(peripheral.outputAlias, {
         name: peripheral.name,
         type: peripheral.type,
         state

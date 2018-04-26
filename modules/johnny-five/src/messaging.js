@@ -1,122 +1,85 @@
+/*
+MIT License
+
+Copyright (c) 2018 Johnny-Five IoT Edge contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 'use strict';
 
-var Transport = require('azure-iot-device-mqtt').Mqtt;
-var Client = require('azure-iot-device').Client;
-var Message = require('azure-iot-device').Message;
-var fs = require('fs');
+const { Mqtt: Transport } = require('azure-iot-device-mqtt').Mqtt;
+const { Client } = require('azure-iot-device');
+const { Message } = require('azure-iot-device');
+const fs = require('fs');
+const { waterfall } = require('async');
 const { processConfig, processWrite } = require('./device');
+const { getEnvironmentVariable } = require('./util');
 
 module.exports = {
   init,
   sendMessage
 };
 
+let client;
+let connected = false;
+
 function init(cb) {
-  // TODO
-  setImmediate(cb);
+  const connectionString = getEnvironmentVariable('EdgeHubConnectionString');
+  const caCertFile = getEnvironmentVariable('EdgeModuleCACertificateFile');
 
-  // Testing code
-  setTimeout(() => {
-    processConfig({
-      peripherals: [{
-        type: "Thermometer",
-        name: "myThermometer",
-        settings: {
-          controller: "MCP9808"
-        },
-        outputAlias: "alias1"
-      }, {
-        type: "Button",
-        name: "myButton",
-        settings: {
-          pin: "GPIO20"
-        },
-        outputAlias: "alias2"
-      }, {
-        type: "Led",
-        name: "myLed",
-        settings: {
-          pin: "GPIO18"
-        },
-        outputAlias: "alias1"
-      }]
-    });
-    processWrite({
-      peripheral: {
-        name: "myLed",
-        type: "Led",
-      },
-      state: {
-        method: "pulse",
-        period: 500,
-      }
-    });
-  }, 2000);
+  client = Client.fromConnectionString(connectionString, Transport);
 
-  return;
+  client.on('error', (err) => console.error(err.message));
 
-  var connectionString = process.env.EdgeHubConnectionString;
-  var caCertFile = process.env.EdgeModuleCACertificateFile;
-
-  var client = Client.fromConnectionString(connectionString, Transport);
-  console.log("Connection String: " + connectionString);
-
-  client.on('error', function (err) {
-    console.error(err.message);
-  });
-
-  client.setOptions({
-    ca: fs.readFileSync(caCertFile).toString('ascii')
-  }, function (err) {
+  waterfall([
+    (next) => fs.readFile(caCertFile, 'utf8', next),
+    (ca, next) => client.setOptions({ ca }, next),
+    (next) => client.open(next),
+    (next) => client.getTwin(next)
+  ], (twin, err) => {
     if (err) {
-      console.log('error:' + err);
-    } else {
-      // connect to the edge instance
-      client.open(function (err) {
-        if (err) {
-          console.error('Could not connect: ' + err.message);
-        } else {
-          console.log('IoT Hub module client initialized');
-
-          // Act on input messages to the module.
-          client.on('inputMessage', function (inputName, msg) {
-            pipeMessage(inputName, msg);
-          });
-        }
-      });
+      cb(err);
+      return;
     }
-  });
 
-  // This function just pipes the messages without any change.
-  function pipeMessage(inputName, msg) {
-    client.complete(msg, printResultFor('Receiving message:'));
+    twin.on('properties.desired', (delta) => {
+      console.log(delta);
+      // TODO: processConfig()
+    });
 
-    if (inputName === 'input1') {
-      var message = msg.getBytes().toString('utf8');
-      if (message) {
-        var outputMsg = new Message(message);
-        client.sendOutputEvent('output1', outputMsg, printResultFor('Sending received message'));
-      }
-    }
-  }
-
-  // Helper function to print results in the console
-  function printResultFor(op) {
-    return function printResult(err, res) {
+    client.on('inputMessage', (inputName, msg) => client.complete(msg, (err, result) => {
       if (err) {
-        console.log(op + ' error: ' + err.toString());
+        console.error(err);
+        return;
       }
-      if (res) {
-        console.log(op + ' status: ' + res.constructor.name);
-      }
-    };
-  }
+      // TODO: processWrite()
+    }));
+
+    connected = true;
+    cb();
+  });
 }
 
-function sendMessage(payload, cb) {
-  // TODO
-  console.log(payload);
-  if (cb) {
-    setImmediate(cb);
+function sendMessage(alias, message, cb) {
+  if (!connected) {
+    throw new Error('Cannot send messages before connecting to IoT Edge');
   }
+  client.sendOutputEvent(alias, new Message(message), cb);
 }
