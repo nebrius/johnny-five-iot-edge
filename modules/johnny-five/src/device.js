@@ -45,7 +45,8 @@ let sendMessage;
 function init(send, cb) {
   sendMessage = send;
   board = new five.Board({
-    io: new Raspi({ enableSoftPwm: true })
+    io: new Raspi({ enableSoftPwm: true }),
+    repl: false
   });
   board.on('ready', cb);
 }

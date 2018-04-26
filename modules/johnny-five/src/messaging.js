@@ -24,10 +24,9 @@ SOFTWARE.
 
 'use strict';
 
-const { Mqtt: Transport } = require('azure-iot-device-mqtt').Mqtt;
+const { Mqtt: Transport } = require('azure-iot-device-mqtt');
 const { Client } = require('azure-iot-device');
 const { Message } = require('azure-iot-device');
-const { readFile } = require('fs');
 const { waterfall } = require('async');
 const { processConfig, processWrite } = require('./device');
 const { getEnvironmentVariable } = require('./util');
@@ -41,17 +40,11 @@ let client;
 let connected = false;
 
 function init(cb) {
-  const connectionString = getEnvironmentVariable('EdgeHubConnectionString');
-  const caCertFile = getEnvironmentVariable('EdgeModuleCACertificateFile');
-
-  client = Client.fromConnectionString(connectionString, Transport);
-
+  client = Client.fromConnectionString(getEnvironmentVariable('EdgeHubConnectionString'), Transport);
   client.on('error', (err) => console.error(err.message));
 
   waterfall([
-    (next) => readFile(caCertFile, 'utf8', next),
-    (ca, next) => client.setOptions({ ca }, next),
-    (next) => client.open(next),
+    (next) => client.open((err) => next(err)), // there's an extra argument we don't care about
     (next) => client.getTwin(next)
   ], (twin, err) => {
     if (err) {
