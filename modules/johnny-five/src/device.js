@@ -24,6 +24,7 @@ SOFTWARE.
 
 const five = require('johnny-five');
 const Raspi = require('raspi-io');
+const { validateConfig, validateRead, validateWrite } = require('./payloadValidator');
 
 const { create: createButton } = require('./devices/button');
 const { create: createLed } = require('./devices/led');
@@ -31,7 +32,7 @@ const { create: createThermometer } = require('./devices/thermometer');
 
 module.exports = {
   init,
-  processTwin
+  processConfig
 }
 
 let board;
@@ -57,14 +58,22 @@ function instantiatePeripheral(config) {
   }
 }
 
-function processTwin(twin) {
-  for (const peripheral of twin.peripherals) {
+function processConfig(configMessage) {
+  validateConfig(configMessage);
+  for (const peripheral of configMessage.peripherals) {
     if (!peripherals[peripheral.name]) {
       peripherals[peripheral.name] = instantiatePeripheral(peripheral);
       peripherals[peripheral.name].on('state-change', (state) => {
         // TODO;
       });
     }
-    peripherals[peripheral.name].updateState(peripheral.state);
   }
+}
+
+function processWrite(writeMessage) {
+  validateWrite(writeMessage);
+  if (!peripherals[writeMessage.peripheralname]) {
+    throw new Error(`Unknown peripheral ${writeMessage.peripheralname}`);
+  }
+  peripherals[writeMessage.peripheralname].updateState(writeMessage.state);
 }

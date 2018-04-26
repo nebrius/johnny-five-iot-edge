@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const { init: initDevice, processTwin } = require('./device');
+const { init: initDevice, processConfig, processRead } = require('./device');
 const { parallel } = require('async');
 
 parallel([
@@ -34,39 +34,40 @@ parallel([
     return;
   }
   console.log('running');
-  processTwin({
+
+  // Testing code
+  processConfig({
     peripherals: [{
-      type: "Thermometerssss",
-      name: "motor1thermometer",
+      type: "Thermometer",
+      name: "myThermometer",
       settings: {
         controller: "MCP9808"
       },
-      state: {
-        celsius: 0,
-        faherenheit: 32,
-        kelvin: 217
-      },
       outputAlias: "alias1"
     }, {
-      type: "Led",
-      name: "alarm1",
+      type: "Button",
+      name: "myButton",
       settings: {
-        pin: "p1-7"
-      },
-      state: {
-        pulse: 500
+        pin: "GPIO20"
       },
       outputAlias: "alias2"
     }, {
       type: "Led",
-      name: "alarm2",
+      name: "myLed",
       settings: {
-        pin: "p1-9"
-      },
-      state: {
-        pulse: 500
+        pin: "GPIO18"
       },
       outputAlias: "alias1"
     }]
+  });
+  processWrite({
+    peripheral: {
+      name: "myLed",
+      type: "Led",
+    },
+    state: {
+      method: "pulse",
+      period: 500,
+    }
   });
 });

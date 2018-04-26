@@ -22,7 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+const five = require('johnny-five');
 const { EventEmitter } = require('events');
+
+module.exports = {
+  create
+};
 
 function create(config) {
   const emitter = new EventEmitter();
