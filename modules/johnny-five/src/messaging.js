@@ -5,6 +5,22 @@ var Client = require('azure-iot-device').Client;
 var Message = require('azure-iot-device').Message;
 var fs = require('fs');
 
+module.exports = {
+  init,
+  sendMessage
+};
+
+function init(cb) {
+  // TODO
+  setImmediate(cb);
+}
+
+function sendMessage(payload, cb) {
+  // TODO
+  console.log(payload);
+  setImmediate(cb);
+}
+
 var connectionString = process.env.EdgeHubConnectionString;
 var caCertFile = process.env.EdgeModuleCACertificateFile;
 
