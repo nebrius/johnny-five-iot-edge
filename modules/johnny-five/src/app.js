@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+'use strict';
+
 const { init: initDevice, processConfig, processRead } = require('./device');
 const { init: initMessaging, sendMessage } = require('./messaging');
 const { parallel } = require('async');

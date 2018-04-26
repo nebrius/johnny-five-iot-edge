@@ -69,6 +69,7 @@ function init(cb) {
         console.error(err);
         return;
       }
+      console.log(result);
       // TODO: processWrite()
     }));
 
