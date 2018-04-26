@@ -26,6 +26,8 @@
   "dependencies": {
     "ajv": "^6.4.0",
     "johnny-five": "^0.14.3",
-    "raspi-io": "^9.0.0"
+    "raspi-io": "^9.0.0",
+    "azure-iot-device": "1.4.0-modules-preview",
+    "azure-iot-device-mqtt": "1.4.0-modules-preview",
   }
 }
