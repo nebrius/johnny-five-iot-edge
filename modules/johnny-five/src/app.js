@@ -34,4 +34,39 @@ parallel([
     return;
   }
   console.log('running');
+  processTwin({
+    peripherals: [{
+      type: "Thermometerssss",
+      name: "motor1thermometer",
+      settings: {
+        controller: "MCP9808"
+      },
+      state: {
+        celsius: 0,
+        faherenheit: 32,
+        kelvin: 217
+      },
+      outputAlias: "alias1"
+    }, {
+      type: "Led",
+      name: "alarm1",
+      settings: {
+        pin: "p1-7"
+      },
+      state: {
+        pulse: 500
+      },
+      outputAlias: "alias2"
+    }, {
+      type: "Led",
+      name: "alarm2",
+      settings: {
+        pin: "p1-9"
+      },
+      state: {
+        pulse: 500
+      },
+      outputAlias: "alias1"
+    }]
+  });
 });
