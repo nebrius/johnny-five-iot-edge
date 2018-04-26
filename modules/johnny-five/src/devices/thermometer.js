@@ -34,6 +34,14 @@ function create(config) {
 
   const thermometer = emitter.instance = new five.Thermometer(config.settings);
 
+  thermometer.on('data', () => {
+    emitter.emit('state-change', {
+      celsius: thermometer.celsius,
+      fahrenheit: thermometer.fahrenheit,
+      kelvin: thermometer.kelvin,
+    });
+  })
+
   emitter.updateState = (newState) => {
     // Do nothing since button has no inbound state functionality
   };
