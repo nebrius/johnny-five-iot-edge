@@ -27,7 +27,7 @@ SOFTWARE.
 const { Mqtt: Transport } = require('azure-iot-device-mqtt').Mqtt;
 const { Client } = require('azure-iot-device');
 const { Message } = require('azure-iot-device');
-const fs = require('fs');
+const { readFile } = require('fs');
 const { waterfall } = require('async');
 const { processConfig, processWrite } = require('./device');
 const { getEnvironmentVariable } = require('./util');
@@ -49,7 +49,7 @@ function init(cb) {
   client.on('error', (err) => console.error(err.message));
 
   waterfall([
-    (next) => fs.readFile(caCertFile, 'utf8', next),
+    (next) => readFile(caCertFile, 'utf8', next),
     (ca, next) => client.setOptions({ ca }, next),
     (next) => client.open(next),
     (next) => client.getTwin(next)
