@@ -27,17 +27,52 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = {
-  validate
+  validateConfig,
+  validateRead,
+  validateWrite
 };
 
 // Create a validator with the latest JSON Schema spec as of this writing
-const ajv = new Ajv();
-ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
-const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'schema', 'config.json')).toString());
-const validator = ajv.compile(schemaContents);
+const configAjv = new Ajv();
+configAjv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+const configValidator = configAjv.compile(
+  JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'schema', 'config.json')).toString()
+  )
+);
 
-function validate(payload) {
-  if (!validator(payload)) {
-    throw validator.errors;
+// Create a validator with the latest JSON Schema spec as of this writing
+const readAjv = new Ajv();
+readAjv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+const readValidator = readAjv.compile(
+  JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'schema', 'read.json')).toString()
+  )
+);
+
+// Create a validator with the latest JSON Schema spec as of this writing
+const writeAjv = new Ajv();
+writeAjv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+const writeValidator = writeAjv.compile(
+  JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'schema', 'write.json')).toString()
+  )
+);
+
+function validateConfig(message) {
+  if (!configValidator(message)) {
+    throw configValidator.errors;
+  }
+}
+
+function validateRead(message) {
+  if (!readValidator(message)) {
+    throw readValidator.errors;
+  }
+}
+
+function validateWrite(message) {
+  if (!writeValidator(message)) {
+    throw writeValidator.errors;
   }
 }

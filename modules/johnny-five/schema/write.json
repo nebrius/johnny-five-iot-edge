@@ -1,0 +1,86 @@
+{
+  "type": "object",
+  "properties": {
+    "peripheral": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [ "name", "type" ]
+    },
+    "state": {
+      "type": "object",
+      "oneOf": [{
+        "description": "Led.on",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [ "on" ]
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "required": [ "method" ]
+      }, {
+        "description": "Led.off",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [ "off" ]
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "required": [ "method" ]
+      }, {
+        "description": "Led.strobe",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [ "blink", "strobe" ]
+          },
+          "peroid": {
+            "type": "number",
+            "minimum": 0
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "required": [ "method", "period" ]
+      }, {
+        "description": "Led.pulse",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [ "pulse" ]
+          },
+          "period": {
+            "type": "number",
+            "minimum": 0
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "required": [ "method", "period" ]
+      }]
+    }
+  },
+  "required": [ "peripheral", "state" ]
+}

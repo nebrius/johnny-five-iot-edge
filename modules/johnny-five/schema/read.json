@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties": {
+    "peripheral": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [ "name", "type" ]
+    },
+    "state": {
+      "type": "object",
+      "oneOf": [{
+        "type": "object",
+        "description": "Thermometer state",
+        "properties": {
+          "celsius": {
+            "type": "number"
+          },
+          "fahrenheit": {
+            "type": "number"
+          },
+          "kelvin": {
+            "type": "number"
+          }
+        },
+        "required": [ "celsius", "fahrenheit", "kelvin" ]
+      }, {
+        "type": "object",
+        "description": "Button state",
+        "properties": {
+          "pressed": {
+            "type": "boolean"
+          }
+        },
+        "required": [ "pressed" ]
+      }]
+    }
+  },
+  "required": [ "peripheral", "state" ]
+}
