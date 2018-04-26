@@ -5,6 +5,7 @@ An IoT Edge module for interacting with hardware based on http://johnny-five.io/
 [Johnny-Five](http://johnny-five.io/) is a popular open soure JavaScript platform for IoT and Robotic development giving various IoT hardware devices a consistent programming interface.  This module enables connectivity between [Iot Edge](https://azure.microsoft.com/en-us/services/iot-edge) and Johhnny-Five so Robotic and IoT developers can use the cloud to configure and communicate with devices in a consistent way without device-specific coding.
 
 # Components
+![Components](Components.svg)
 ## Microsoft Azure IoT Edge (Cloud)
 1. Follow [these steps](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux) to deploy an IoT Edge module.
 2. 
