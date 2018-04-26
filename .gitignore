@@ -59,3 +59,6 @@ typings/
 
 # IDE
 .vscode
+
+# npm. Normally we want to include this, but things are complicated with the RPi and it's never accurate.
+package-lock.json
