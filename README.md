@@ -6,14 +6,42 @@ An IoT Edge module for interacting with hardware based on http://johnny-five.io/
 
 # Components
 ![Components](Components.svg)
-## Microsoft Azure IoT Edge (Cloud)
-1. Follow [these steps](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux) to deploy an IoT Edge module.
-2. 
+## Microsoft Azure IoT Hub (Cloud)
 ## Microsoft Azure IoT Edge (Device)
-## 
+
 
 # Example
 [The example](examples/readme.md) demonstrates a configuration that would be applied to a Raspberry Pi with a LED, a button, a temperature sensor, and a mini OLED display.
+
+The IoT device is configured via .JSON file that defines the state of each of the components that are connected to the device, like LEDs, buttons, sensors, and displays.  
+## Example payload
+This payload defines a thermometer controller "MCP9809", a LED at pin PI-7, and a LED at pin PI-9.
+
+    {
+        peripherals: [{
+        type: "Thermometer",
+        name: "motor1thermometer",
+        settings: {
+          controller: "MCP9808"
+        },
+        outputAlias: "alias1"
+      }, {
+        type: "Led",
+        name: "alarm1",
+        settings: {
+          pin: "P1-7"
+        },
+        outputAlias: "alias2"
+      }, {
+        type: "Led",
+        name: "alarm2",
+        settings: {
+        pin: "P1-9"
+        },
+        outputAlias: "alias1"
+      }]
+    }
+  
 
 # License
 
