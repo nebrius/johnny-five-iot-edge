@@ -33,7 +33,7 @@ module.exports = {
 // Create a validator with the latest JSON Schema spec as of this writing
 const ajv = new Ajv();
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
-const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'schema', 'payload-schema.json')).toString());
+const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'schema', 'config.json')).toString());
 const validator = ajv.compile(schemaContents);
 
 function validate(payload) {

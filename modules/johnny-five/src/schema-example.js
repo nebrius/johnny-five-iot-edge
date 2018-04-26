@@ -24,44 +24,33 @@ SOFTWARE.
 
 const { validate } = require('./payloadValidator');
 
-const examplePayload = {
+const config = {
   peripherals: [{
-    type: "Thermometerssss",
+    type: "Thermometer",
     name: "motor1thermometer",
     settings: {
       controller: "MCP9808"
-    },
-    state: {
-      celsius: 0,
-      faherenheit: 32,
-      kelvin: 217
     },
     outputAlias: "alias1"
   }, {
     type: "Led",
     name: "alarm1",
     settings: {
-      pin: "p1-7"
-    },
-    state: {
-      pulse: 500
+      pin: "P1-7"
     },
     outputAlias: "alias2"
   }, {
     type: "Led",
     name: "alarm2",
     settings: {
-      pin: "p1-9"
-    },
-    state: {
-      pulse: 500
+      pin: "P1-9"
     },
     outputAlias: "alias1"
   }]
 };
 
 try {
-  validate(examplePayload);
+  validate(config);
   console.log('Success');
 } catch(errors) {
   console.error(JSON.stringify(errors, null, '  '));

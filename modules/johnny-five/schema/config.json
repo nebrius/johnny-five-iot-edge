@@ -25,20 +25,6 @@
                 }
               }
             },
-            "state": {
-              "type": "object",
-              "properties": {
-                "celsius": {
-                  "type": "number"
-                },
-                "fahrenheit": {
-                  "type": "number"
-                },
-                "kelvin": {
-                  "type": "number"
-                }
-              }
-            },
             "outputAlias": {
               "type": "string"
             }
@@ -64,67 +50,11 @@
                 }
               }
             },
-            "state": {
-              "type": "object",
-              "oneOf": [{
-                "properties": {
-                  "on": {
-                    "type": "boolean",
-                    "enum": [ true ]
-                  },
-                  "brightness": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 255
-                  }
-                },
-                "required": [ "on" ]
-              }, {
-                "properties": {
-                  "off": {
-                    "type": "boolean",
-                    "enum": [ true ]
-                  },
-                  "brightness": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 255
-                  }
-                },
-                "required": [ "off" ]
-              }, {
-                "properties": {
-                  "strobe": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "brightness": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 255
-                  }
-                },
-                "required": [ "strobe" ]
-              }, {
-                "properties": {
-                  "pulse": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "brightness": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 255
-                  }
-                },
-                "required": [ "pulse" ]
-              }]
-            },
             "outputAlias": {
               "type": "string"
             }
           },
-          "required": [ "type", "name", "settings", "state", "outputAlias" ]
+          "required": [ "type", "name", "settings", "outputAlias" ]
         }, {
           "properties": {
             "type": {
@@ -196,44 +126,11 @@
               },
               "required": [ "pin" ]
             },
-            "state": {
-              "type": "object",
-              "properties": {
-                "invertDisplay": {
-                  "type": "boolean"
-                },
-                "dimDisplay": {
-                  "type": "boolean"
-                },
-                "displayOn": {
-                  "type": "boolean"
-                },
-                "commands": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "command": {
-                        "type": "string"
-                      },
-                      "arguments": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "required": [ "command", "arguments" ]
-                  }
-                }
-              },
-              "required": [ "commands" ]
-            },
             "outputAlias": {
               "type": "string"
             }
           },
-          "required": [ "type", "name", "settings", "state", "outputAlias" ]
+          "required": [ "type", "name", "settings", "outputAlias" ]
         }]
       }
     }
