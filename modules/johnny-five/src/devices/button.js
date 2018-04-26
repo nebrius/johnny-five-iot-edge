@@ -22,22 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const Ajv = require('ajv');
-const fs = require('fs');
-const path = require('path');
+const { EventEmitter } = require('events');
 
-module.exports = {
-  validate
-};
+function create(config) {
+  const emitter = new EventEmitter();
 
-// Create a validator with the latest JSON Schema spec as of this writing
-const ajv = new Ajv();
-ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
-const schemaContents = JSON.parse(fs.readFileSync(path.join(__dirname, 'payload-schema.json')).toString());
-const validator = ajv.compile(schemaContents);
+  emitter.instance = new five.Button(config.settings);
 
-function validate(payload) {
-  if (!validator(payload)) {
-    throw validator.errors;
-  }
+  emitter.instance.on('down', () => {
+    emitter.emit('state-change', {
+      pressed: true
+    });
+  });
+  emitter.instance.on('up', () => {
+    emitter.emit('state-change', {
+      pressed: false
+    });
+  });
+
+  emitter.updateState = () => {
+    // Do nothing since button has no inbound state functionality
+  };
+
+  return emitter;
 }
