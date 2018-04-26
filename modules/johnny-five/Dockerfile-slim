@@ -1,0 +1,23 @@
+FROM node:8-slim
+
+WORKDIR /app/
+
+COPY package*.json ./
+
+RUN apt-get update && apt-get install -y sudo unzip build-essential python
+
+RUN wget abyz.me.uk/rpi/pigpio/pigpio.zip \
+    && unzip pigpio.zip \
+    && cd PIGPIO  \
+    && make  \
+    && make install
+
+RUN npm install --production
+
+COPY src/app.js ./
+
+USER node
+
+ENV DEBUG_OPTION " "
+
+CMD ["sh", "-c", "node $DEBUG_OPTION app.js"]

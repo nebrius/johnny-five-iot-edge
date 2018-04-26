@@ -24,34 +24,14 @@ SOFTWARE.
 
 'use strict';
 
-const five = require('johnny-five');
-const { EventEmitter } = require('events');
-
 module.exports = {
-  create
+  getEnvironmentVariable
 };
 
-function create(config) {
-  const emitter = new EventEmitter();
-
-  const led = emitter.instance = new five.Led(config.settings);
-
-  emitter.updateState = (newState) => {
-
-    if (typeof newState.brightness === 'number') {
-      led.brightness(newState.brightness);
-    }
-
-    if (newState.on) {
-      led.on();
-    } else if (newState.off) {
-      led.off();
-    } else if (typeof newState.strobe === 'number') {
-      led.strobe(newState.strobe);
-    } else if (typeof newState.pulse === 'number') {
-      led.pulse(newState.pulse);
-    }
-  };
-
-  return emitter;
+function getEnvironmentVariable(variable) {
+  const value = process.env[variable];
+  if (typeof value !== 'string') {
+    throw new Error(`Environment variable ${variable} is not defined`);
+  }
+  return value;
 }

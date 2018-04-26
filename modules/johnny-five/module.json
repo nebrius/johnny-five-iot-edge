@@ -4,7 +4,7 @@
     "image": {
         "repository": "toolboc/johnny5onedge",
         "tag": {
-            "version": "0.0.1",
+            "version": "0.0.8",
             "platforms": {
                 "amd64": "./Dockerfile",
                 "arm32v7": "./Dockerfile",
