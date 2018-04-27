@@ -90,12 +90,12 @@ function init(cb) {
         next(err, twin);
       });
     },
-    (twin, next) => { // Seriously, what is that argument and where is it coming from?
+    (twin, next) => {
       let { config } = twin.properties.desired;
-      if (!config) {
-        console.warn('No device configuration available in device twin, creating empty config');
-        config = JSON.stringify({ peripherals: [] });
-      }
+      // if (!config) {
+      //   console.warn('No device configuration available in device twin, creating empty config');
+      //   config = JSON.stringify({ peripherals: [] });
+      // }
       const patch = { config };
       if (twin.properties.desired.$version !== twin.properties.reported.$version) {
         console.debug('Updating reported device twin properties...');
@@ -135,13 +135,16 @@ function init(cb) {
     });
 
     connected = true;
+    let config;
     try {
-      processConfig(JSON.parse(twin.properties.reported.config));
-      cb();
+      config = JSON.parse(twin.properties.reported.config);
     } catch(e) {
       console.error(`Received invalid device twin ${twin.properties.reported.config}: ${e}`);
       cb(e);
+      return;
     }
+    processConfig(config);
+    cb();
   });
 }
 
