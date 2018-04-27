@@ -42,15 +42,13 @@ let connected = false;
 const SEND_MESSAGE_TIMEOUT_IN_SECONDS = 30;
 
 function init(cb) {
-  if(typeof cb !== 'function'){
-    throw new Error('cb is not a function');
-  }
   const caCertFilePath = getEnvironmentVariable('EdgeModuleCACertificateFile');
-  client = Client.fromConnectionString(getEnvironmentVariable('EdgeHubConnectionString'), Transport);
-  client.on('error', (err) => console.error(err.message));
+  const connectionString = getEnvironmentVariable('EdgeHubConnectionString');
+
+  client = Client.fromConnectionString(connectionString, Transport);
 
   waterfall([
-    (next) => { 
+    (next) => {
       console.debug('Reading caCertFile...');
       readFile(caCertFilePath, "utf-8", (err, contents)=>{
         if(err){
@@ -73,7 +71,7 @@ function init(cb) {
         console.debug('CaCertOptions set successfully')
         next();
       });
-    }, 
+    },
     (next) => {
       console.debug('Connecting to IoT Edge...');
       client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
@@ -111,6 +109,9 @@ function init(cb) {
       cb(err);
       return;
     }
+
+    client.on('error', (err) => console.error(`Client error: ${err}`));
+
     client.onDeviceMethod('write', (request, response) => {
       console.debug(`Received write message: ${JSON.stringify(request.payload)}`);
       try {
@@ -128,6 +129,7 @@ function init(cb) {
         });
       }
     });
+
     connected = true;
     try {
       processConfig(JSON.parse(twin.properties.reported.config));
