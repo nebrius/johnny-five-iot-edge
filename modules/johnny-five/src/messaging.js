@@ -56,7 +56,7 @@ function init(cb) {
           return;
         }
         console.debug('CaCertFile read successfully');
-        next(contents);
+        next(undefined, contents);
       });
     },
     (caCertFileContents, next) => {
