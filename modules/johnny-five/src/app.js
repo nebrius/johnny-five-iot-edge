@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2018 Johnny-Five IoT Edge contributors
+Copyright (c) 2018 IoT Edge for Makers module contributors contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ const { parallel } = require('async');
 
 parallel([
   (next) => initDevice(sendMessage, next),
-  initMessaging
+  (next) => initMessaging(initMessaging)
 ], (err) => {
   if (err) {
     console.error(err);

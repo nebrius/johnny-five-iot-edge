@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2018 Johnny-Five IoT Edge contributors
+Copyright (c) 2018 IoT Edge for Makers module contributors contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,9 +45,21 @@ function init(cb) {
   client.on('error', (err) => console.error(err.message));
 
   waterfall([
-    (next) => client.open((err) => next(err)), // there's an extra argument we don't care about
-    (next) => client.getTwin(next),
-    (twin, whatIsThis, next) => { // Seriously, what is that argument and where is it coming from?
+    (next) => {
+      console.debug('Connecting to IoT Edge...');
+      client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
+        console.debug('Connected to IoT Edge');
+        next(err);
+      });
+    },
+    (next) => {
+      console.debug('Fetching device twin...');
+      client.getTwin((err, twin) => {
+        console.debug('Fetched device twin');
+        next(err, twin);
+      });
+    },
+    (twin, next) => { // Seriously, what is that argument and where is it coming from?
       let { config } = twin.properties.desired;
       if (!config) {
         console.warn('No device configuration available in device twin, creating empty config');
@@ -55,8 +67,13 @@ function init(cb) {
       }
       const patch = { config };
       if (twin.properties.desired.$version !== twin.properties.reported.$version) {
-        twin.properties.reported.update(patch, (err) => next(err, twin));
+        console.debug('Updating reported device twin properties...');
+        twin.properties.reported.update(patch, (err) => {
+          console.debug('Updated reported device twin properties');
+          next(err, twin);
+        });
       } else {
+        console.debug('Reported device twin properties already up to date, skipping update');
         next(undefined, twin);
       }
     }
