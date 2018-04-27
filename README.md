@@ -15,7 +15,7 @@ The steps below detail each step of setting up and provisioning a Raspberry Pi I
 
 1. Create an Azure IoT Hub and register an IoT Edge Device by following the first two steps at https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-simulate-device-linux. You can complete these steps before setting up the Raspberry Pi. 
 
-![Set up IoT Edge device](\assets\portal-add-device-snap.PNG)
+![Set up IoT Edge device](assets/portal-add-device-snap.PNG)
 
 2. Set up the Raspberry Pi with prerequisites by running the following commands in Terminal:
 ```
