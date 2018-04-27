@@ -24,32 +24,14 @@ SOFTWARE.
 
 'use strict';
 
-const five = require('johnny-five');
-const { EventEmitter } = require('events');
-
 module.exports = {
-  create
+  getEnvironmentVariable
 };
 
-function create(config) {
-  const emitter = new EventEmitter();
-
-  emitter.instance = new five.Button(config.settings);
-
-  emitter.instance.on('down', () => {
-    emitter.emit('state-change', {
-      pressed: true
-    });
-  });
-  emitter.instance.on('up', () => {
-    emitter.emit('state-change', {
-      pressed: false
-    });
-  });
-
-  emitter.updateState = () => {
-    // Do nothing since button has no inbound state functionality
-  };
-
-  return emitter;
+function getEnvironmentVariable(variable) {
+  const value = process.env[variable];
+  if (typeof value !== 'string') {
+    throw new Error(`Environment variable ${variable} is not defined`);
+  }
+  return value;
 }

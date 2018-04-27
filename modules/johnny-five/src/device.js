@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+'use strict';
+
 const five = require('johnny-five');
 const Raspi = require('raspi-io');
 const { validateConfig, validateRead, validateWrite } = require('./payloadValidator');
@@ -32,15 +34,19 @@ const { create: createThermometer } = require('./devices/thermometer');
 
 module.exports = {
   init,
-  processConfig
-}
+  processConfig,
+  processWrite
+};
 
 let board;
 let peripherals = {};
+let sendMessage;
 
-function init(cb) {
+function init(send, cb) {
+  sendMessage = send;
   board = new five.Board({
-    io: new Raspi({ enableSoftPwm: true })
+    io: new Raspi({ enableSoftPwm: true }),
+    repl: false
   });
   board.on('ready', cb);
 }
@@ -63,17 +69,19 @@ function processConfig(configMessage) {
   for (const peripheral of configMessage.peripherals) {
     if (!peripherals[peripheral.name]) {
       peripherals[peripheral.name] = instantiatePeripheral(peripheral);
-      peripherals[peripheral.name].on('state-change', (state) => {
-        // TODO;
-      });
+      peripherals[peripheral.name].on('state-change', (state) => sendMessage(peripheral.outputAlias, {
+        name: peripheral.name,
+        type: peripheral.type,
+        state
+      }));
     }
   }
 }
 
 function processWrite(writeMessage) {
   validateWrite(writeMessage);
-  if (!peripherals[writeMessage.peripheralname]) {
-    throw new Error(`Unknown peripheral ${writeMessage.peripheralname}`);
+  if (!peripherals[writeMessage.peripheral.name]) {
+    throw new Error(`Unknown peripheral ${writeMessage.peripheral.name}`);
   }
-  peripherals[writeMessage.peripheralname].updateState(writeMessage.state);
+  peripherals[writeMessage.peripheral.name].updateState(writeMessage.state);
 }
