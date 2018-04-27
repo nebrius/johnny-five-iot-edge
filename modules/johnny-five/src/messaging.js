@@ -25,8 +25,7 @@ SOFTWARE.
 'use strict';
 
 const { Mqtt: Transport } = require('azure-iot-device-mqtt');
-const { Client } = require('azure-iot-device');
-const { Message } = require('azure-iot-device');
+const { Client, Message } = require('azure-iot-device');
 const { waterfall } = require('async');
 const { processConfig, processWrite } = require('./device');
 const { getEnvironmentVariable } = require('./util');
@@ -38,6 +37,8 @@ module.exports = {
 
 let client;
 let connected = false;
+
+const SEND_MESSAGE_TIMEOUT_IN_SECONDS = 30;
 
 function init(cb) {
   client = Client.fromConnectionString(getEnvironmentVariable('EdgeHubConnectionString'), Transport);
@@ -64,13 +65,14 @@ function init(cb) {
       cb(err);
       return;
     }
-    client.on('message', (msg) => {
-      try {
-        processWrite(JSON.parse(msg.data.toString()));
-      } catch(e) {
-        console.error(`Received invalid message ${msg.data.toString()}: ${e}`);
-      }
-      client.complete(msg);
+    client.onDeviceMethod('write', (request, response) => {
+      console.debug(`Received write message: ${JSON.stringify(request.payload)}`);
+      processWrite(request.payload);
+      response.send(200, 'Input was written to log.', (err) => {
+        if (err) {
+          console.error(`An error ocurred when sending a method response: ${err}`);
+        }
+      });
     });
     connected = true;
     try {
@@ -82,9 +84,14 @@ function init(cb) {
   });
 }
 
-function sendMessage(alias, message, cb) {
+function sendMessage(alias, payload, cb) {
   if (!connected) {
     throw new Error('Cannot send messages before connecting to IoT Edge');
   }
-  client.sendOutputEvent(alias, new Message(JSON.stringify(message)), cb);
+  console.debug(`Sending read message: ${JSON.stringify(payload)}`);
+  client.invokeDeviceMethod(alias, {
+    methodName: 'read',
+    payload,
+    timeoutInSeconds: SEND_MESSAGE_TIMEOUT_IN_SECONDS
+  }, cb);
 }
