@@ -45,28 +45,37 @@ function init(cb) {
 
   waterfall([
     (next) => client.open((err) => next(err)), // there's an extra argument we don't care about
-    (next) => client.getTwin(next)
-  ], (twin, err) => {
+    (next) => client.getTwin(next),
+    (twin, whatIsThis, next) => { // Seriously, what is that argument and where is it coming from?
+      let { config } = twin.properties.desired;
+      if (!config) {
+        console.warn('No device configuration available in device twin, creating empty config');
+        config = JSON.stringify({ peripherals: [] });
+      }
+      const patch = { config };
+      if (twin.properties.desired.$version !== twin.properties.reported.$version) {
+        twin.properties.reported.update(patch, (err) => next(err, twin));
+      } else {
+        next(undefined, twin);
+      }
+    }
+  ], (err, twin) => {
     if (err) {
       cb(err);
       return;
     }
-
-    twin.on('properties.desired', (delta) => {
-      console.log(delta);
-      // TODO: processConfig()
+    client.on('message', (inputName, msg) => {
+      client.complete(msg, (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(result);
+        // TODO: processWrite()
+      });
     });
-
-    client.on('inputMessage', (inputName, msg) => client.complete(msg, (err, result) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log(result);
-      // TODO: processWrite()
-    }));
-
     connected = true;
+    processConfig(JSON.parse(twin.properties.reported.config));
     cb();
   });
 }
@@ -75,5 +84,5 @@ function sendMessage(alias, message, cb) {
   if (!connected) {
     throw new Error('Cannot send messages before connecting to IoT Edge');
   }
-  client.sendOutputEvent(alias, new Message(message), cb);
+  client.sendOutputEvent(alias, new Message(JSON.stringify(message)), cb);
 }
