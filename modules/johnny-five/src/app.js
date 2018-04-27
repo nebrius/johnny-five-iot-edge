@@ -29,7 +29,7 @@ const { init: initMessaging, sendMessage } = require('./messaging');
 const { parallel } = require('async');
 
 parallel([
-  //(next) => initDevice(sendMessage, next),
+  (next) => initDevice(sendMessage, next),
   (next) => initMessaging(next)
 ], (err) => {
   if (err) {
