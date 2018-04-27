@@ -10,8 +10,10 @@ RUN npm install -g n
 
 RUN n 8.9.4
 
-COPY . .
+COPY package*.json ./
 
 RUN npm install --production
+
+COPY . .
 
 CMD ["sh", "-c", "node app.js"]
