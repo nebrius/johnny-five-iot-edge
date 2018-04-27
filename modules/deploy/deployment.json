@@ -35,8 +35,8 @@
                         "status": "running",
                         "restartPolicy": "always",
                         "settings": {
-                            "image": "toolboc/johnny5onedge:0.0.8-arm32v7",
-                            "createOptions": "{}"
+                            "image": "toolboc/johnny5onedge:0.0.92-arm32v7",
+                            "createOptions": "{\"HostConfig\":{\"Privileged\":true,\"Devices\":[{\"PathOnHost\":\"/dev/i2c-1\",\"PathInContainer\":\"/dev/i2c-1\",\"CgroupPermissions\":\"rwm\"},{\"PathOnHost\":\"/dev/gpiomem\",\"PathInContainer\":\"/dev/gpiomem\",\"CgroupPermissions\":\"rwm\"}],\"Mounts\":[{\"Type\":\"bind\",\"Source\":\"/lib/modules/\",\"Target\":\"/lib/modules/\"}]}}"
                         }
                     }
                 }
