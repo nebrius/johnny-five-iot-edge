@@ -65,11 +65,19 @@ function init(cb) {
       return;
     }
     client.on('message', (msg) => {
-      processWrite(JSON.parse(msg.data.toString()));
+      try {
+        processWrite(JSON.parse(msg.data.toString()));
+      } catch(e) {
+        console.error(`Received invalid message ${msg.data.toString()}: ${e}`);
+      }
       client.complete(msg);
     });
     connected = true;
-    processConfig(JSON.parse(twin.properties.reported.config));
+    try {
+      processConfig(JSON.parse(twin.properties.reported.config));
+    } catch(e) {
+      console.error(`Received invalid device twin ${twin.properties.reported.config}: ${e}`);
+    }
     cb();
   });
 }

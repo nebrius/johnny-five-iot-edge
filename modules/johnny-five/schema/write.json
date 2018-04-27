@@ -79,6 +79,20 @@
           }
         },
         "required": [ "method", "period" ]
+      }, {
+        "description": "Led.stop",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [ "stop" ]
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "required": [ "method" ]
       }]
     }
   },

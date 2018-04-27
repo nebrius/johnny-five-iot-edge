@@ -56,6 +56,9 @@ function create(config) {
       case 'pulse':
         led.pulse(newState.period);
         break;
+      case 'stop':
+        led.stop();
+        break;
     }
   };
 
