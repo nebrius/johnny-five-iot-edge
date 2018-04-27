@@ -27,6 +27,7 @@ SOFTWARE.
 const { Mqtt: Transport } = require('azure-iot-device-mqtt');
 const { Client, Message } = require('azure-iot-device');
 const { waterfall } = require('async');
+const { readFile } = require('fs');
 const { processConfig, processWrite } = require('./device');
 const { getEnvironmentVariable } = require('./util');
 
@@ -41,10 +42,38 @@ let connected = false;
 const SEND_MESSAGE_TIMEOUT_IN_SECONDS = 30;
 
 function init(cb) {
+  if(typeof cb !== 'function'){
+    throw new Error('cb is not a function');
+  }
+  const caCertFilePath = getEnvironmentVariable('EdgeModuleCACertificateFile');
   client = Client.fromConnectionString(getEnvironmentVariable('EdgeHubConnectionString'), Transport);
   client.on('error', (err) => console.error(err.message));
 
   waterfall([
+    (next) => { 
+      console.debug('Reading caCertFile...');
+      readFile(caCertFilePath, "utf-8", (err, contents)=>{
+        if(err){
+          next(err);
+          return;
+        }
+        console.debug('CaCertFile read successfully');
+        next(contents);
+      });
+    },
+    (caCertFileContents, next) => {
+      console.debug('Setting CaCert options for client...');
+      client.setOptions({
+        ca: caCertFileContents
+      }, (err) => {
+        if(err){
+          next(err);
+          return;
+        }
+        console.debug('CaCertOptions set successfully')
+        next();
+      });
+    }, 
     (next) => {
       console.debug('Connecting to IoT Edge...');
       client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
