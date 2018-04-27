@@ -67,12 +67,20 @@ function init(cb) {
     }
     client.onDeviceMethod('write', (request, response) => {
       console.debug(`Received write message: ${JSON.stringify(request.payload)}`);
-      processWrite(request.payload);
-      response.send(200, 'Input was written to log.', (err) => {
-        if (err) {
-          console.error(`An error ocurred when sending a method response: ${err}`);
-        }
-      });
+      try {
+        processWrite(request.payload);
+        response.send(200, 'OK', (err) => {
+          if (err) {
+            console.error(`An error ocurred when sending a method response: ${err}`);
+          }
+        });
+      } catch(e) {
+        response.send(400, 'Invalid Write Message', (err) => {
+          if (err) {
+            console.error(`An error ocurred when sending a method response: ${err}`);
+          }
+        });
+      }
     });
     connected = true;
     try {
