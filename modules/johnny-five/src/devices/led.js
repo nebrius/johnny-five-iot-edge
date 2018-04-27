@@ -42,14 +42,20 @@ function create(config) {
       led.brightness(newState.brightness);
     }
 
-    if (newState.on) {
-      led.on();
-    } else if (newState.off) {
-      led.off();
-    } else if (typeof newState.strobe === 'number') {
-      led.strobe(newState.strobe);
-    } else if (typeof newState.pulse === 'number') {
-      led.pulse(newState.pulse);
+    switch (newState.method) {
+      case 'on':
+        led.on();
+        break;
+      case 'off':
+        led.off();
+        break;
+      case 'strobe':
+      case 'blink':
+        led.strobe(newState.period);
+        break;
+      case 'pulse':
+        led.pulse(newState.period);
+        break;
     }
   };
 

@@ -64,15 +64,9 @@ function init(cb) {
       cb(err);
       return;
     }
-    client.on('message', (inputName, msg) => {
-      client.complete(msg, (err, result) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        console.log(result);
-        // TODO: processWrite()
-      });
+    client.on('message', (msg) => {
+      processWrite(JSON.parse(msg.data.toString()));
+      client.complete(msg);
     });
     connected = true;
     processConfig(JSON.parse(twin.properties.reported.config));
