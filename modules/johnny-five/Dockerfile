@@ -16,4 +16,4 @@ RUN npm install --production
 
 COPY . .
 
-CMD ["sh", "-c", "node app.js"]
+CMD ["sh", "-c", "node $DEBUG_OPTION app.js"]
