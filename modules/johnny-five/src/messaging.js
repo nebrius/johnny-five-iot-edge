@@ -75,8 +75,12 @@ function init(cb) {
     (next) => {
       console.debug('Connecting to IoT Edge...');
       client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
+        if(err){
+          next(err);
+          return;
+        }
         console.debug('Connected to IoT Edge');
-        next(err);
+        next();
       });
     },
     (next) => {
@@ -133,10 +137,11 @@ function init(cb) {
     connected = true;
     try {
       processConfig(JSON.parse(twin.properties.reported.config));
+      cb();
     } catch(e) {
       console.error(`Received invalid device twin ${twin.properties.reported.config}: ${e}`);
+      cb(e);
     }
-    cb();
   });
 }
 
