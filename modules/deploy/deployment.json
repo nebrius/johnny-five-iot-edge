@@ -35,8 +35,8 @@
                         "status": "running",
                         "restartPolicy": "always",
                         "settings": {
-                            "image": "toolboc/johnny5onedge:0.0.92-arm32v7",
-                            "createOptions": "{\"HostConfig\":{\"Privileged\":true,\"Devices\":[{\"PathOnHost\":\"/dev/i2c-1\",\"PathInContainer\":\"/dev/i2c-1\",\"CgroupPermissions\":\"rwm\"},{\"PathOnHost\":\"/dev/gpiomem\",\"PathInContainer\":\"/dev/gpiomem\",\"CgroupPermissions\":\"rwm\"}],\"Mounts\":[{\"Type\":\"bind\",\"Source\":\"/lib/modules/\",\"Target\":\"/lib/modules/\"}]}}"
+                            "image": "toolboc/johnny5onedge:0.0.972-arm32v7",
+                            "createOptions": "{\"HostConfig\":{\"Privileged\":true,\"Devices\":[{\"PathOnHost\":\"/dev/i2c-1\",\"PathInContainer\":\"/dev/i2c-1\",\"CgroupPermissions\":\"rwm\"},{\"PathOnHost\":\"/dev/gpiomem\",\"PathInContainer\":\"/dev/gpiomem\",\"CgroupPermissions\":\"rwm\"}],\"Mounts\":[{\"Type\":\"bind\",\"Source\":\"/lib/modules/\",\"Target\":\"/lib/modules/\"}],\"PortBindings\":{\"9229/tcp\":[{\"HostPort\":\"9229\"}]}},\"ExposedPorts\":{\"9229/tcp\":{}},\"Env\":[\"DEBUG_OPTION=--inspect-brk=0.0.0.0:9229\"]}"
                         }
                     }
                 }
