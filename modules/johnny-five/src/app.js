@@ -33,7 +33,7 @@ parallel([
   initMessaging
 ], (err) => {
   if (err) {
-    console.err(err);
+    console.error(err);
     process.exit(-1);
     return;
   }
