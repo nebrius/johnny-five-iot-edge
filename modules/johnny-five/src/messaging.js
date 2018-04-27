@@ -153,9 +153,5 @@ function sendMessage(alias, payload, cb) {
     throw new Error('Cannot send messages before connecting to IoT Edge');
   }
   console.debug(`Sending read message: ${JSON.stringify(payload)}`);
-  client.invokeDeviceMethod(alias, {
-    methodName: 'read',
-    payload,
-    timeoutInSeconds: SEND_MESSAGE_TIMEOUT_IN_SECONDS
-  }, cb);
+  client.sendEvent(payload, cb);
 }
