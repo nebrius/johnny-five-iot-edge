@@ -35,7 +35,47 @@ dtparam=i2c=on
 dtparam=i2c_arm_baudrate=100000
 ```
 Save, then reboot the Raspberry Pi.
-3. Continue with steps 3 and 4 https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-simulate-device-linux to start the IoT Edge runtime. On step 4, "Deploy a module," enter `toolboc/johnny5onedge/` in the Image URI field. After completing this step, wait a few moments for the container to deploy to your device. Then, when you run `sudo docker ps`, you should see the IoT Edge for Makers module running.
+3. Continue with steps 3 and 4 https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-simulate-device-linux to start the IoT Edge runtime. On step 4, "Deploy a module," enter `toolboc/johnny5onedge/` in the Image URI field. You will also need to provide the following in the ""Container Create Options" field:
+```{
+  "ExposedPorts": {
+    "9229/tcp": {}
+  },
+  "Env": [
+    "DEBUG_OPTION=--inspect-brk=0.0.0.0:9229"
+  ],
+  "HostConfig": {
+    "PortBindings": {
+      "9229/tcp": [
+        {
+          "HostPort": "9229"
+        }
+      ]
+    },
+    "Privileged": true,
+    "Devices": [
+      {
+        "PathOnHost": "/dev/i2c-1",
+        "PathInContainer": "/dev/i2c-1",
+        "CgroupPermissions": "rwm"
+      },
+      {
+        "PathOnHost": "/dev/gpiomem",
+        "PathInContainer": "/dev/gpiomem",
+        "CgroupPermissions": "rwm"
+      }
+    ],
+    "Mounts": [
+      {
+        "Type": "bind",
+        "Source": "/lib/modules/",
+        "Target": "/lib/modules/"
+      }
+    ]
+  }
+}
+```
+
+After completing this step, wait a few moments for the container to deploy to your device. Then, when you run `sudo docker ps`, you should see the IoT Edge for Makers module running.
 
 ## Details
 Under the hood, the IoT Edge for Makers module uses [Johnny-Five](http://johnny-five.io/), a popular open source Javascript platform for IoT and robotic development that gives various IoT hardware devices a consistent programming interface. The IoT Edge module takes care of some challenges such as exposing GPIO through the Docker container. Currently, the IoT Edge for Makers module supports only the Raspberry Pi. However, it can be extended to support [other boards supported by the Johnny-Five platform](http://johnny-five.io/platform-support/) such as the Arduino UNO and Particle Photon.
