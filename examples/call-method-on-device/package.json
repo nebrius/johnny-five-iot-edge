@@ -1,0 +1,14 @@
+{
+  "name": "call-method-on-device",
+  "version": "1.0.0",
+  "description": "Direct Method Example",
+  "main": "CallMethodOnDevice.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul DeCarlo",
+  "license": "MIT",
+  "dependencies": {
+    "azure-iothub": "^1.3.0-modules-preview"
+  }
+}
