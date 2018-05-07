@@ -35,8 +35,18 @@
                         "status": "running",
                         "restartPolicy": "always",
                         "settings": {
-                            "image": "toolboc/johnny5onedge:0.0.972-arm32v7",
-                            "createOptions": "{\"HostConfig\":{\"Privileged\":true,\"Devices\":[{\"PathOnHost\":\"/dev/i2c-1\",\"PathInContainer\":\"/dev/i2c-1\",\"CgroupPermissions\":\"rwm\"},{\"PathOnHost\":\"/dev/gpiomem\",\"PathInContainer\":\"/dev/gpiomem\",\"CgroupPermissions\":\"rwm\"}],\"Mounts\":[{\"Type\":\"bind\",\"Source\":\"/lib/modules/\",\"Target\":\"/lib/modules/\"}],\"PortBindings\":{\"9229/tcp\":[{\"HostPort\":\"9229\"}]}},\"ExposedPorts\":{\"9229/tcp\":{}},\"Env\":[\"DEBUG_OPTION=--inspect-brk=0.0.0.0:9229\"]}"
+                            "image": "toolboc/johnny5onedge:0.0.980-arm32v7",
+                            "createOptions": "{\"ExposedPorts\":{\"9229/tcp\":{}},\"Env\":[\"DEBUG_OPTION=--inspect=0.0.0.0:9229\"],\"HostConfig\":{\"PortBindings\":{\"9229/tcp\":[{\"HostPort\":\"9229\"}]},\"Privileged\":true,\"Devices\":[{\"PathOnHost\":\"/dev/i2c-1\",\"PathInContainer\":\"/dev/i2c-1\",\"CgroupPermissions\":\"rwm\"},{\"PathOnHost\":\"/dev/gpiomem\",\"PathInContainer\":\"/dev/gpiomem\",\"CgroupPermissions\":\"rwm\"}],\"Mounts\":[{\"Type\":\"bind\",\"Source\":\"/lib/modules/\",\"Target\":\"/lib/modules/\"}]}}"
+                        }
+                    },
+                    "Edge-Blink": {
+                        "version": "1.0",
+                        "type": "docker",
+                        "status": "running",
+                        "restartPolicy": "always",
+                        "settings": {
+                            "image": "toolboc/edge-blink:0.0.980-arm32v7",
+                            "createOptions": "{\"ExposedPorts\":{\"9228/tcp\":{}},\"Env\":[\"DEBUG_OPTION=--inspect=0.0.0.0:9228\"],\"HostConfig\":{\"PortBindings\":{\"9228/tcp\":[{\"HostPort\":\"9228\"}]}}}"
                         }
                     }
                 }
@@ -46,7 +56,8 @@
             "properties.desired": {
                 "schemaVersion": "1.0",
                 "routes": {
-                    "route": "FROM /* INTO $upstream"
+                    "route": "FROM /* INTO $upstream",
+                    "J5PipeToEdge-Blink": "FROM /messages/modules/Johnny5IoTEdge/outputs/* INTO BrokeredEndpoint(\"/modules/Edge-Blink/inputs/J5Messages\")"
                 },
                 "storeAndForwardConfiguration": {
                     "timeToLiveSecs": 7200

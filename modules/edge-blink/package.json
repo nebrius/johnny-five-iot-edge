@@ -1,0 +1,32 @@
+{
+  "name": "edge-blink",
+  "version": "1.0.0",
+  "description": "An IoT Edge module for receiving and sending messages from johnny-five-iot-edge @ http://johnny-five.io/",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nebrius/johnny-five-iot-edge.git"
+  },
+  "keywords": [
+    "IoT",
+    "IoT Edge",
+    "Raspberry Pi",
+    "Johnny-Five",
+    "Azure"
+  ],
+  "author": "Paul DeCarlo <toolboc@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nebrius/johnny-five-iot-edge/issues"
+  },
+  "homepage": "https://github.com/nebrius/johnny-five-iot-edge#readme",
+  "dependencies": {
+    "ajv": "^6.4.0",
+    "async": "^2.6.0",
+    "azure-iot-device": "1.4.0-modules-preview",
+    "azure-iot-device-mqtt": "1.4.0-modules-preview"
+  }
+}

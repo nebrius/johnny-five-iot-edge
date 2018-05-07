@@ -2,7 +2,7 @@
   "name": "call-method-on-device",
   "version": "1.0.0",
   "description": "Direct Method Example",
-  "main": "CallMethodOnDevice.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
