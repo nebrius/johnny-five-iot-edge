@@ -9,6 +9,6 @@
   "author": "Paul DeCarlo",
   "license": "MIT",
   "dependencies": {
-    "azure-iothub": "^1.3.0-modules-preview"
+    "azure-iothub": "1.7.3"
   }
 }

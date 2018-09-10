@@ -25,7 +25,7 @@ SOFTWARE.
 'use strict';
 
 const { Mqtt: Transport } = require('azure-iot-device-mqtt');
-const { Client, Message } = require('azure-iot-device');
+const { ModuleClient, Message } = require('azure-iot-device');
 const { waterfall } = require('async');
 const { readFile } = require('fs');
 const { getEnvironmentVariable } = require('./util');
@@ -40,47 +40,21 @@ let connected = false;
 const SEND_MESSAGE_TIMEOUT_IN_SECONDS = 30;
 
 function init(cb) {
-  const caCertFilePath = getEnvironmentVariable('EdgeModuleCACertificateFile');
-  const connectionString = getEnvironmentVariable('EdgeHubConnectionString');
 
-  client = Client.fromConnectionString(connectionString, Transport);
+  console.debug('Connecting to IoT Edge...');
+  ModuleClient.fromEnvironment(Transport, (err, moduleClient) => {
+    if (err) {
+      console.error(`IoT Edge Connection error: ${err}`);
+      cb(err);
+    }
+    client = moduleClient;
+    console.debug('Connected to IoT Edge');
+    configure(cb);
+  });
+}
 
+function configure(cb) {
   waterfall([
-    (next) => {
-      console.debug('Reading caCertFile...');
-      readFile(caCertFilePath, "utf-8", (err, contents)=>{
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('CaCertFile read successfully');
-        next(undefined, contents);
-      });
-    },
-    (caCertFileContents, next) => {
-      console.debug('Setting CaCert options for client...');
-      client.setOptions({
-        ca: caCertFileContents
-      }, (err) => {
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('CaCertOptions set successfully')
-        next();
-      });
-    },
-    (next) => {
-      console.debug('Connecting to IoT Edge...');
-      client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('Connected to IoT Edge');
-        next();
-      });
-    },
     (next) => {
       console.debug('Setting up J5Messages route listener...');
 
@@ -102,7 +76,7 @@ function init(cb) {
     client.on('error', (err) => console.error(`Client error: ${err}`));
 
     connected = true;
-    
+
     cb();
   });
 }
@@ -110,13 +84,13 @@ function init(cb) {
 function pipeMessage(inputName, msg) {
   client.complete(msg, printResultFor('Receiving J5 Module message:'));
 
-//  if (inputName === 'buttonPress') {
-    var message = msg.getBytes().toString('utf8');
-    if (message) {
-      var outputMsg = new Message(message);
-      client.sendOutputEvent('output', outputMsg, printResultFor('Sending received message'));
-    }
+  //  if (inputName === 'buttonPress') {
+  var message = msg.getBytes().toString('utf8');
+  if (message) {
+    var outputMsg = new Message(message);
+    client.sendOutputEvent('output', outputMsg, printResultFor('Sending received message'));
   }
+}
 //}
 
 // Helper function to print results in the console

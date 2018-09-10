@@ -25,7 +25,7 @@ var methodParams = {
     timeoutInSeconds: 30
 };
 
-client.invokeModuleMethod(deviceId, moduleId, methodParams, function (err, result) {
+client.invokeDeviceMethod(deviceId, moduleId, methodParams, function (err, result) {
     if (err) {
         console.error('Failed to invoke method \'' + methodName + '\': ' + err.message);
     } else {

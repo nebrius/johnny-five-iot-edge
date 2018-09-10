@@ -25,7 +25,7 @@ SOFTWARE.
 'use strict';
 
 const { Mqtt: Transport } = require('azure-iot-device-mqtt');
-const { Client, Message } = require('azure-iot-device');
+const { ModuleClient, Message } = require('azure-iot-device');
 const { waterfall } = require('async');
 const { readFile } = require('fs');
 const { processConfig, processWrite } = require('./device');
@@ -42,47 +42,21 @@ let connected = false;
 const SEND_MESSAGE_TIMEOUT_IN_SECONDS = 30;
 
 function init(cb) {
-  const caCertFilePath = getEnvironmentVariable('EdgeModuleCACertificateFile');
-  const connectionString = getEnvironmentVariable('EdgeHubConnectionString');
+  
+  console.debug('Connecting to IoT Edge...');
+  ModuleClient.fromEnvironment(Transport, (err, moduleClient) => {
+    if (err) {
+      console.error(`IoT Edge Connection error: ${err}`);
+      cb(err);
+    }
+    client = moduleClient;
+    console.debug('Connected to IoT Edge');
+    configure(cb);
+  });
+}
 
-  client = Client.fromConnectionString(connectionString, Transport);
-
+function configure(cb) {
   waterfall([
-    (next) => {
-      console.debug('Reading caCertFile...');
-      readFile(caCertFilePath, "utf-8", (err, contents)=>{
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('CaCertFile read successfully');
-        next(undefined, contents);
-      });
-    },
-    (caCertFileContents, next) => {
-      console.debug('Setting CaCert options for client...');
-      client.setOptions({
-        ca: caCertFileContents
-      }, (err) => {
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('CaCertOptions set successfully')
-        next();
-      });
-    },
-    (next) => {
-      console.debug('Connecting to IoT Edge...');
-      client.open((err) => { // Note: do not pass `next` in directly here, there's some extra ghost args
-        if(err){
-          next(err);
-          return;
-        }
-        console.debug('Connected to IoT Edge');
-        next();
-      });
-    },
     (next) => {
       console.debug('Fetching device twin...');
       client.getTwin((err, twin) => {
@@ -116,7 +90,7 @@ function init(cb) {
 
     client.on('error', (err) => console.error(`Client error: ${err}`));
 
-    client.onDeviceMethod('write', (request, response) => {
+    client.onMethod('write', (request, response) => {
       console.debug(`Received write message: ${JSON.stringify(request.payload)}`);
       try {
         processWrite(request.payload);
@@ -139,7 +113,7 @@ function init(cb) {
     try {
       config = JSON.parse(twin.properties.reported.config);
     } catch(e) {
-      console.error(`Received invalid device twin ${twin.properties.reported.config}: ${e}`);
+      console.error(`Received invalid device twin ${JSON.stringify(twin.properties)}: ${e}`);
       cb(e);
       return;
     }
