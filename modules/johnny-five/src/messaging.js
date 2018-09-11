@@ -111,7 +111,7 @@ function configure(cb) {
     connected = true;
     let config;
     try {
-      config = JSON.parse(twin.properties.reported.config);
+      config = JSON.parse(twin.properties.desired.config);
     } catch(e) {
       console.error(`Received invalid device twin ${JSON.stringify(twin.properties)}: ${e}`);
       cb(e);

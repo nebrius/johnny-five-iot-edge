@@ -62,5 +62,9 @@ function create(config) {
     }
   };
 
+  if(config.initialState){
+      emitter.updateState(config.initialState);
+  }
+
   return emitter;
 }
