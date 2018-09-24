@@ -31,7 +31,7 @@ This payload defines a thermometer controller "MCP9809", a LED at pin PI-7, and 
         type: "Led",
         name: "alarm2",
         settings: {
-        pin: "P1-9"
+          pin: "P1-9"
         },
         outputAlias: "alias1"
       }]
